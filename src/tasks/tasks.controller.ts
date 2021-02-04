@@ -22,11 +22,7 @@ export class TasksController {
 
     @Get()
     async getTasks(@Query(ValidationPipe) filterDto: GetTasksFilterDTO): Promise<Task[]> {
-        if (Object.keys(filterDto).length) {
-            // return this.tasksService.getTasksWithFilters(filterDto);
-        } else {
-            return this.tasksService.getAllTasks();
-        }
+        return this.tasksService.getAllTasks(filterDto);
     }
 
     @Get("/:id")
