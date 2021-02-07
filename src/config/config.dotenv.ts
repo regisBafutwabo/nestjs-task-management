@@ -1,4 +1,4 @@
-export default () => ({
+const config = () => ({
     database: {
         host: process.env.TYPEORM_HOST,
         name: process.env.TYPEORM_DATABASE,
@@ -6,4 +6,9 @@ export default () => ({
         password: process.env.TYPEORM_PASSWORD,
         port: process.env.TYPEORM_PORT,
     },
+    jwt: {
+        secret: process.env.JWT_SECRET,
+    },
 });
+
+export default config;
