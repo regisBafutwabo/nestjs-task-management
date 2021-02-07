@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 import { typeOrmConfig } from "./config";
 import { TasksModule } from "./tasks/tasks.module";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { TasksModule } from "./tasks/tasks.module";
         }),
         TasksModule,
         TypeOrmModule.forRoot(typeOrmConfig),
+        AuthModule,
     ],
 })
 export class AppModule {}
