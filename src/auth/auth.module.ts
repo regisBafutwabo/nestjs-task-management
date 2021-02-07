@@ -7,6 +7,7 @@ import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { UserRepository } from "./user.repository";
 import config from "../config/config.dotenv";
+import { JwtStrategy } from "./jwt.strategy";
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import config from "../config/config.dotenv";
         TypeOrmModule.forFeature([UserRepository]),
     ],
     controllers: [AuthController],
-    providers: [AuthService],
+    providers: [AuthService, JwtStrategy],
+    exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}
