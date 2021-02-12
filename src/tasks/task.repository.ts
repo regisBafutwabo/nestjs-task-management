@@ -13,7 +13,8 @@ export class TaskRepository extends Repository<Task> {
         task.description = description;
         task.title = title;
         task.status = TaskStatus.OPEN;
-        task.user = user;
+        // task.user = user;
+        task.userId = user.id;
 
         task.save();
         delete task.user;
@@ -21,7 +22,11 @@ export class TaskRepository extends Repository<Task> {
         return task;
     }
 
-    async updateTask(task: Task, status: TaskStatus): Promise<Task> {
+    async updateTask(
+        task: Task,
+        status: TaskStatus,
+        user: User,
+    ): Promise<Task> {
         task.status = status;
 
         await task.save();
@@ -29,10 +34,12 @@ export class TaskRepository extends Repository<Task> {
         return task;
     }
 
-    async getTasks(filterDto: GetTasksFilterDTO): Promise<Task[]> {
+    async getTasks(filterDto: GetTasksFilterDTO, user: User): Promise<Task[]> {
         const { status, searchTerm } = filterDto;
 
         const query = this.createQueryBuilder("task");
+
+        query.where("task.userId = :userId", { userId: user.id });
 
         if (status) {
             query.andWhere("task.status = :status", { status });
