@@ -72,6 +72,9 @@ export class TasksController {
         @Param("id") id: string,
         @GetUser() user: User,
     ): Promise<Task> {
+        this.logger.verbose(
+            `User "${user.username}" updating task "${id}" status to ${status}`,
+        );
         return this.tasksService.updateTaskStatus(id, status, user);
     }
 
