@@ -3,9 +3,12 @@ import { Repository, EntityRepository } from "typeorm";
 import { CreateTaskDTO, GetTasksFilterDTO } from "./dto";
 import { TaskStatus } from "./taskStatus.enum";
 import { User } from "src/auth/user.entity";
+import { InternalServerErrorException, Logger } from "@nestjs/common";
 
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
+    private logger = new Logger("Tasks Repository");
+
     async createTask(createTaskDTO: CreateTaskDTO, user: User): Promise<Task> {
         const { title, description } = createTaskDTO;
         const task = new Task();
@@ -13,13 +16,24 @@ export class TaskRepository extends Repository<Task> {
         task.description = description;
         task.title = title;
         task.status = TaskStatus.OPEN;
-        // task.user = user;
         task.userId = user.id;
 
-        task.save();
-        delete task.user;
+        try {
+            await task.save();
+            delete task.user;
 
-        return task;
+            return task;
+        } catch (error) {
+            this.logger.error(
+                `❌ User "${
+                    user.username
+                }" Failed to create a new task:"${JSON.stringify(
+                    createTaskDTO,
+                )}"`,
+                error.stack,
+            );
+            throw new InternalServerErrorException();
+        }
     }
 
     async updateTask(
@@ -29,9 +43,19 @@ export class TaskRepository extends Repository<Task> {
     ): Promise<Task> {
         task.status = status;
 
-        await task.save();
+        try {
+            await task.save();
 
-        return task;
+            return task;
+        } catch (error) {
+            this.logger.error(
+                `❌ User "${
+                    user.username
+                }" Failed to update status for task:"${JSON.stringify(task)}"`,
+                error.stack,
+            );
+            throw new InternalServerErrorException();
+        }
     }
 
     async getTasks(filterDto: GetTasksFilterDTO, user: User): Promise<Task[]> {
@@ -52,9 +76,17 @@ export class TaskRepository extends Repository<Task> {
                 },
             );
         }
-
-        const tasks = await query.getMany();
-
-        return tasks;
+        try {
+            const tasks = await query.getMany();
+            return tasks;
+        } catch (error) {
+            this.logger.error(
+                `❌ Failed to get tasks for user "${
+                    user.username
+                }". Filters:${JSON.stringify(filterDto)}`,
+                error.stack,
+            );
+            throw new InternalServerErrorException();
+        }
     }
 }
