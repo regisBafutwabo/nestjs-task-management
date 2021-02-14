@@ -6,6 +6,6 @@
 - [x] Add a Validation System and Error Handling
 - [x] Add a data persistance system using Postgres and TypeORM
 - [x] Add Authentication using PassportJS
-- [ ] Add Authorization
+- [x] Add Authorization
 - [ ] Add Logging
 - [ ] Deployement Configuration
