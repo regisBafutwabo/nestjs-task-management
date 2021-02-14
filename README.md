@@ -7,5 +7,5 @@
 - [x] Add a data persistance system using Postgres and TypeORM
 - [x] Add Authentication using PassportJS
 - [x] Add Authorization
-- [ ] Add Logging
-- [ ] Deployement Configuration
+- [x] Add Logging
+- [ ] Deployment Configuration
